@@ -11,11 +11,14 @@ const port = 3000;
 // 載入路由
 const routes = require("./routes");
 
+// 載入helpers
+const helpers = require("./helper");
+
 // 載入mongoose
 require("./config/mongoose");
 
 // 設定樣板引擎
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine("handlebars", exphbs({ defaultLayout: "main", helpers: helpers }));
 app.set("view engine", "handlebars");
 
 // 設定靜態網站
@@ -31,6 +34,6 @@ app.use(methodOverride("_method"));
 app.use(routes);
 
 // 監聽
-app.listen(port, (req, res) => {
+app.listen(port, () => {
   console.log(`This is listening on http://localhost:${port}`);
 });

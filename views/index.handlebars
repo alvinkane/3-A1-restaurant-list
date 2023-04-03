@@ -13,6 +13,21 @@
             aria-label="Restaurant Name..."
             aria-describedby="search-button"
           />
+          <div class="dropdown">
+            <select
+              id="search-categories"
+              {{! query的name }}
+              name="category"
+              class="form-control"
+              aria-label="select by category"
+              {{!-- {{#if category}}data-value={{ category }} {{/if}} --}}
+            >
+              <option value="所有分類" selected>所有分類</option>
+              {{#list restaurantsAll}}
+                {{category}}
+              {{/list}}
+            </select>
+          </div>
           <div class="input-group-append">
             <button class="btn btn-major mt-1 ms-2 me-5" type="submit"><i
                 class="fas fa-search"
