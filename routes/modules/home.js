@@ -23,7 +23,7 @@ router.get("/", (req, res) => {
 
 router.get("/search", (req, res) => {
   const keyword = req.query.keyword;
-  const category = req.query.category;
+  const categorySelected = req.query.category;
   // 使用regular expression，"i"可以忽略大小寫
   // const regex = new RegExp(keyword, "i");
   Restaurant.find({
@@ -40,10 +40,10 @@ router.get("/search", (req, res) => {
           data.category.toLowerCase().includes(keyword.trim().toLowerCase())
       );
       filterRestaurant =
-        category === "所有分類"
+        categorySelected === "所有分類"
           ? filterRestaurant
           : filterRestaurant.filter((restaurant) =>
-              restaurant.category.includes(category)
+              restaurant.category.includes(categorySelected)
             );
       if (filterRestaurant.length === 0) {
         res.render("notFound", { keyword });
@@ -52,6 +52,7 @@ router.get("/search", (req, res) => {
           restaurants: filterRestaurant,
           keyword,
           restaurantsAll,
+          categorySelected,
         });
     })
     .catch((error) => {
