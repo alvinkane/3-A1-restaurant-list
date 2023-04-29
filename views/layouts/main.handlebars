@@ -25,7 +25,12 @@
               class="d-inline-block align-top"
               alt="我的餐廳清單"
             />
-            我的餐廳清單
+            {{#if isAuthenticated}}
+              {{#if user.name}}
+                {{user.name}}的
+              {{/if}}
+            {{/if}}
+            餐廳清單
           </a>
 
           {{! create }}
@@ -34,10 +39,18 @@
             class="text-white border p-2 text-decoration-none bg-primary rounded me-3"
           >Create</a>
           {{! login }}
-          <a
-            href="/users/login"
-            class="text-dark border p-2 text-decoration-none rounded"
-          >Login</a>
+          {{#if isAuthenticated}}
+            <a
+              href="/users/logout"
+              class="text-dark border p-2 text-decoration-none rounded"
+            >Logout</a>
+          {{else}}
+            <a
+              href="/users/login"
+              class="text-dark border p-2 text-decoration-none rounded"
+            >Login</a>
+          {{/if}}
+
         </div>
       </nav>
       <div class="banner"></div>

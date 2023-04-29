@@ -47,6 +47,13 @@ app.use(methodOverride("_method"));
 // 呼叫passport
 usePassport(app);
 
+// 設定變數
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  res.locals.user = req.user;
+  next();
+});
+
 // 使用路由
 app.use(routes);
 
