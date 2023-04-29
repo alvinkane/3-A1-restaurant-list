@@ -45,29 +45,8 @@ db.once("open", () => {
             const restaurant = restaurantList.find(
               (restaurant) => restaurant.id === SEED_USER[i].quantity[j]
             );
-            const {
-              name,
-              name_en,
-              category,
-              image,
-              location,
-              phone,
-              googole_map,
-              rating,
-              description,
-            } = restaurant;
-            return Restaurant.create({
-              name,
-              name_en,
-              category,
-              image,
-              location,
-              phone,
-              googole_map,
-              rating,
-              description,
-              userId,
-            });
+            const restaurantData = { ...restaurant, userId };
+            return Restaurant.create(restaurantData);
           })
         );
       })

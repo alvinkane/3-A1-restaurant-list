@@ -11,29 +11,8 @@ router.get("/new", (req, res) => {
 // 資料庫新增資料
 router.post("/", (req, res) => {
   const userId = req.user._id;
-  const {
-    name,
-    name_en,
-    category,
-    image,
-    location,
-    phone,
-    googole_map,
-    rating,
-    description,
-  } = req.body;
-  Restaurant.create({
-    name,
-    name_en,
-    category,
-    image,
-    location,
-    phone,
-    googole_map,
-    rating,
-    description,
-    userId,
-  })
+  const restaurantData = { ...req.body, userId };
+  Restaurant.create(restaurantData)
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
