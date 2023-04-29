@@ -7,17 +7,17 @@ const restaurantList = require("../../restaurant.json").results;
 const bcrypt = require("bcryptjs");
 
 const db = require("../../config/mongoose");
-const restaurant = require("../restaurant");
 
+// user的種子資料
 const SEED_USER = [
   {
-    name: "firstUser",
+    name: "user1",
     email: "user1@example.com",
     password: "12345678",
     quantity: [1, 2, 3],
   },
   {
-    name: "secondUser",
+    name: "user2",
     email: "user2@example.com",
     password: "12345678",
     quantity: [4, 5, 6],
@@ -39,12 +39,13 @@ db.once("open", () => {
       )
       .then((user) => {
         const userId = user._id;
-
         return Promise.all(
           Array.from({ length: SEED_USER[i].quantity.length }, (_, j) => {
+            // 找尋對應的餐廳
             const restaurant = restaurantList.find(
               (restaurant) => restaurant.id === SEED_USER[i].quantity[j]
             );
+            // 將資料建立
             const restaurantData = { ...restaurant, userId };
             return Restaurant.create(restaurantData);
           })
