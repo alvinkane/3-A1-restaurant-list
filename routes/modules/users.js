@@ -3,6 +3,9 @@ const router = express.Router();
 
 const User = require("../../models/user");
 
+// 密碼雜湊
+const bcrytpt = require("bcryptjs");
+
 const passport = require("passport");
 
 router.get("/login", (req, res) => {
@@ -57,11 +60,16 @@ router.post("/register", (req, res) => {
         });
       } else {
         // 如果不存在就建立資料並且回到login
-        return User.create({
-          name,
-          email,
-          password,
-        })
+        return bcrytpt
+          .genSalt(10)
+          .then((salt) => bcrytpt.hash(password, salt))
+          .then((hash) =>
+            User.create({
+              name,
+              email,
+              password: hash,
+            })
+          )
           .then(() => res.redirect("/users/login"))
           .catch((err) => console.log(err));
       }
