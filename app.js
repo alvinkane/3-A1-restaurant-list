@@ -6,6 +6,7 @@ const exphbs = require("express-handlebars");
 const methodOverride = require("method-override");
 // 載入express-session
 const session = require("express-session");
+const usePassport = require("./config/passport");
 
 // 載入mongoose
 require("./config/mongoose");
@@ -42,6 +43,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // 使用method-override
 app.use(methodOverride("_method"));
+
+// 呼叫passport
+usePassport(app);
 
 // 使用路由
 app.use(routes);
