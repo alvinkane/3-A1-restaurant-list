@@ -20,6 +20,9 @@ const routes = require("./routes");
 // 載入helpers
 const helpers = require("./helper");
 
+// 載入flash
+const flash = require("connect-flash");
+
 const app = express();
 
 // 設定樣板引擎
@@ -47,10 +50,15 @@ app.use(methodOverride("_method"));
 // 呼叫passport
 usePassport(app);
 
+// 使用flash
+app.use(flash());
+
 // 設定變數
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated();
   res.locals.user = req.user;
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.warning_msg = req.flash("warning_msg");
   next();
 });
 
