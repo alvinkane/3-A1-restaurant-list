@@ -10,16 +10,40 @@ router.get("/new", (req, res) => {
 
 // 資料庫新增資料
 router.post("/", (req, res) => {
-  Restaurant.create(req.body)
+  const userId = req.user._id;
+  const {
+    name,
+    name_en,
+    category,
+    image,
+    location,
+    phone,
+    googole_map,
+    rating,
+    description,
+  } = req.body;
+  Restaurant.create({
+    name,
+    name_en,
+    category,
+    image,
+    location,
+    phone,
+    googole_map,
+    rating,
+    description,
+    userId,
+  })
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
 
 // 詳細資料
 router.get("/:restaurant_id", (req, res) => {
-  const id = req.params.restaurant_id;
+  const userId = req.user._id;
+  const _id = req.params.restaurant_id;
   // 找對應id的餐廳
-  return Restaurant.findById(id)
+  return Restaurant.findOne({ _id, userId })
     .lean()
     .then((restaurant) => {
       res.render("show", { restaurant });
@@ -29,25 +53,28 @@ router.get("/:restaurant_id", (req, res) => {
 
 // 修改資料頁面
 router.get("/:restaurant_id/edit", (req, res) => {
-  const id = req.params.restaurant_id;
-  return Restaurant.findById(id)
+  const userId = req.user._id;
+  const _id = req.params.restaurant_id;
+  return Restaurant.findOne({ _id, userId })
     .lean()
     .then((restaurant) => res.render("edit", { restaurant }))
-    .catch((error) => conmsole.log(error));
+    .catch((error) => console.log(error));
 });
 
 // 修改資料庫資料
 router.put("/:restaurant_id", (req, res) => {
-  const id = req.params.restaurant_id;
-  return Restaurant.findByIdAndUpdate(id, req.body)
-    .then(() => res.redirect(`/restaurants/${id}`))
+  const userId = req.user._id;
+  const _id = req.params.restaurant_id;
+  return Restaurant.findByIdAndUpdate({ _id, userId }, req.body)
+    .then(() => res.redirect(`/restaurants/${_id}`))
     .catch((error) => console.log(error));
 });
 
 // 刪除資料
 router.delete("/:restaurant_id", (req, res) => {
-  const id = req.params.restaurant_id;
-  return Restaurant.findByIdAndDelete(id)
+  const userId = req.user._id;
+  const _id = req.params.restaurant_id;
+  return Restaurant.findByIdAndDelete({ _id, userId })
     .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
