@@ -14,12 +14,13 @@ router.get("/login", (req, res) => {
 
 router.post(
   "/login",
-  (req, res) => {
+  (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
       req.flash("warning_msg", "請輸入帳號及密碼!");
       return res.redirect("/users/login");
     }
+    next();
   },
   passport.authenticate("local", {
     successRedirect: "/",

@@ -27,35 +27,46 @@ const SEED_USER = [
 db.once("open", () => {
   console.log("running restaurantSeeder script...");
   for (let i = 0; i < SEED_USER.length; i++) {
-    bcrypt
-      .genSalt(10)
-      .then((salt) => bcrypt.hash(SEED_USER[i].password, salt))
-      .then((hash) =>
-        User.create({
-          name: SEED_USER[i].name,
-          email: SEED_USER[i].email,
-          password: hash,
-        })
-      )
-      .then((user) => {
-        const userId = user._id;
-        return Promise.all(
-          Array.from({ length: SEED_USER[i].quantity.length }, (_, j) => {
-            // 找尋對應的餐廳
-            const restaurant = restaurantList.find(
-              (restaurant) => restaurant.id === SEED_USER[i].quantity[j]
-            );
-            // 將資料建立
-            const restaurantData = { ...restaurant, userId };
-            return Restaurant.create(restaurantData);
-          })
-        );
-      })
-      .then(() => {
+    User.findOne({ email: SEED_USER[i].email }).then((user) => {
+      // 如果資料庫已經建立
+      if (user) {
+        console.log("Email已經存在!");
         if (i === SEED_USER.length - 1) {
           console.log("done");
           process.exit();
         }
-      });
+        return;
+      }
+      bcrypt
+        .genSalt(10)
+        .then((salt) => bcrypt.hash(SEED_USER[i].password, salt))
+        .then((hash) =>
+          User.create({
+            name: SEED_USER[i].name,
+            email: SEED_USER[i].email,
+            password: hash,
+          })
+        )
+        .then((user) => {
+          const userId = user._id;
+          return Promise.all(
+            Array.from({ length: SEED_USER[i].quantity.length }, (_, j) => {
+              // 找尋對應的餐廳
+              const restaurant = restaurantList.find(
+                (restaurant) => restaurant.id === SEED_USER[i].quantity[j]
+              );
+              const restaurantData = { ...restaurant, userId };
+              // 將資料建立
+              return Restaurant.create(restaurantData);
+            })
+          );
+        })
+        .then(() => {
+          if (i === SEED_USER.length - 1) {
+            console.log("done");
+            process.exit();
+          }
+        });
+    });
   }
 });

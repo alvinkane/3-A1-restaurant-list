@@ -19,16 +19,12 @@ module.exports = (app) => {
           .then((user) => {
             // 錯誤處理
             if (!user) {
-              return done(
-                null,
-                false,
-                req.flash("warning_msg", "帳號或密碼不正確!")
-              );
+              return done(null, false, req.flash("warning_msg", "帳號不正確!"));
             }
             return bcrypt
               .compare(password, user.password)
               .then((isMatch) => {
-                if (isMatch) {
+                if (!isMatch) {
                   return done(
                     null,
                     false,
