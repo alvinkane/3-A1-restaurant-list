@@ -16,8 +16,8 @@
     <header>
       <!-- navigation -->
       <nav class="navbar navbar-light bg-light">
-        <div class="container">
-          <a class="navbar-brand" href="/">
+        <div class="container d-flex">
+          <a class="navbar-brand flex-grow-1" href="/">
             <img
               src="https://assets-lighthouse.s3.amazonaws.com/uploads/image/file/6227/restaurant-list-logo.png"
               width="30"
@@ -27,11 +27,17 @@
             />
             我的餐廳清單
           </a>
+
           {{! create }}
           <a
             href="/restaurants/new"
-            class="text-dark border p-2 text-decoration-none bg-white d-flex justify-content-end rounded"
+            class="text-white border p-2 text-decoration-none bg-primary rounded me-3"
           >Create</a>
+          {{! login }}
+          <a
+            href="/users/login"
+            class="text-dark border p-2 text-decoration-none rounded"
+          >Login</a>
         </div>
       </nav>
       <div class="banner"></div>
