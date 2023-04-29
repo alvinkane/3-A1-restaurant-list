@@ -1,19 +1,81 @@
 // 載入model
 const Restaurant = require("../restaurant");
+const User = require("../user");
 // 載入json
 const restaurantList = require("../../restaurant.json").results;
 
-const db = require("../../config/mongoose");
+const bcrypt = require("bcryptjs");
 
-//第二種作法
+const db = require("../../config/mongoose");
+const restaurant = require("../restaurant");
+
+const SEED_USER = [
+  {
+    name: "firstUser",
+    email: "user1@example.com",
+    password: "12345678",
+    quantity: [1, 2, 3],
+  },
+  {
+    name: "secondUser",
+    email: "user2@example.com",
+    password: "12345678",
+    quantity: [4, 5, 6],
+  },
+];
+
 db.once("open", () => {
   console.log("running restaurantSeeder script...");
+  for (let i = 0; i < SEED_USER.length; i++) {
+    bcrypt
+      .genSalt(10)
+      .then((salt) => bcrypt.hash(SEED_USER[i].password, salt))
+      .then((hash) =>
+        User.create({
+          name: SEED_USER[i].name,
+          email: SEED_USER[i].email,
+          password: hash,
+        })
+      )
+      .then((user) => {
+        const userId = user._id;
 
-  Restaurant.create(restaurantList)
-    .then(() => {
-      console.log("restaurantSeeder done!");
-      // 終端機不用再自己停止
-      db.close();
-    })
-    .catch((err) => console.log(err));
+        return Promise.all(
+          Array.from({ length: SEED_USER[i].quantity.length }, (_, j) => {
+            const restaurant = restaurantList.find(
+              (restaurant) => restaurant.id === SEED_USER[i].quantity[j]
+            );
+            const {
+              name,
+              name_en,
+              category,
+              image,
+              location,
+              phone,
+              googole_map,
+              rating,
+              description,
+            } = restaurant;
+            return Restaurant.create({
+              name,
+              name_en,
+              category,
+              image,
+              location,
+              phone,
+              googole_map,
+              rating,
+              description,
+              userId,
+            });
+          })
+        );
+      })
+      .then(() => {
+        if (i === SEED_USER.length - 1) {
+          console.log("done");
+          process.exit();
+        }
+      });
+  }
 });
