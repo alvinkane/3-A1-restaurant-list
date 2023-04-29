@@ -1,9 +1,14 @@
 // 導入express及handlebars
 const express = require("express");
-const app = express();
+
 const exphbs = require("express-handlebars");
 // 載入method-override
 const methodOverride = require("method-override");
+// 載入express-session
+const session = require("express-session");
+
+// 載入mongoose
+require("./config/mongoose");
 
 // 設定參數
 const port = 3000;
@@ -14,8 +19,7 @@ const routes = require("./routes");
 // 載入helpers
 const helpers = require("./helper");
 
-// 載入mongoose
-require("./config/mongoose");
+const app = express();
 
 // 設定樣板引擎
 app.engine("handlebars", exphbs({ defaultLayout: "main", helpers: helpers }));
@@ -23,6 +27,15 @@ app.set("view engine", "handlebars");
 
 // 設定靜態網站
 app.use(express.static("public"));
+
+// 設定session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // 設定 body-parser
 app.use(express.urlencoded({ extended: true }));
